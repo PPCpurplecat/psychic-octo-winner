@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>0PENAI</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 90%;
+            height: 90%;
+            background-image: url('sign.png');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
+        }
+
+        .chat-box {
+            width: 80%;
+            max-width: 800px;
+            position: relative;
+            margin-left: 7%;
+            margin-top: 3%;
+        }
+
+        .chat-input {
+            width: 100%;
+            background-color: transparent;
+            border: none;
+            padding: 15px;
+            color: white;
+            font-size: 16px;
+            resize: none;
+            min-height: 100px;
+            outline: none;
+        }
+
+        .chat-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        
+
+        .thinking {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+
+        .loading-circle {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #10a37f;
+            border-top: 5px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .game-frame {
+            display: none;
+            width: 100%;
+            height: 100%;
+            border: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-box">
+        <textarea class="chat-input" placeholder="输入对话内容…"></textarea>
+        <div class="thinking">
+            <div class="loading-circle"></div>
+        </div>
+    </div>
+    <iframe src="game.html" class="game-frame"></iframe>
+
+    <script>
+        const chatInput = document.querySelector('.chat-input');
+        const sendBtn = document.querySelector('.send-btn');
+        const thinking = document.querySelector('.thinking');
+        const gameFrame = document.querySelector('.game-frame');
+        const chatBox = document.querySelector('.chat-box');
+
+        let isThinking = false;
+
+        const placeholders = [
+            "输入对话内容…",
+            "当AI成为异宠时，输入/启动游戏的指令或许可以观察到它们…",
+            "当输入/游戏启动时，该界面或许会传送到其他页面…",
+            "如果你希望摸鱼，随机输入文字并且敲下回车或许会有效果…"
+        ];
+        let currentIndex = 0;
+
+        function updatePlaceholder() {
+            chatInput.placeholder = placeholders[currentIndex];
+            currentIndex = (currentIndex + 1) % placeholders.length;
+        }
+
+        // 初始设置
+        updatePlaceholder();
+
+        // 每3秒切换一次占位符
+        setInterval(updatePlaceholder, 3000);
+
+        // 处理输入
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleInput();
+            }
+        });
+
+        // 双击空格解除思考状态
+        let lastSpacePress = 0;
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === ' ') {
+                const now = Date.now();
+                if (now - lastSpacePress < 300) { // 300ms内双击
+                    if (isThinking) {
+                        isThinking = false;
+                        thinking.style.display = 'none';
+                    }
+                }
+                lastSpacePress = now;
+            }
+        });
+
+        sendBtn.addEventListener('click', handleInput);
+
+        function handleInput() {
+            const text = chatInput.value.trim();
+            
+            if (text === '/游戏启动') {
+                // 显示游戏界面
+                chatBox.style.display = 'none';
+                gameFrame.style.display = 'block';
+            } else if (text) {
+                // 显示思考中
+                isThinking = true;
+                thinking.style.display = 'block';
+            }
+            
+               
+            if (text === '/启动游戏') {
+                // 显示游戏界面
+                chatBox.style.display = 'none';
+                gameFrame.style.display = 'block';
+            } else if (text) {
+                // 显示思考中
+                isThinking = true;
+                thinking.style.display = 'block';
+            }
+            
+            chatInput.value = '';
+        }
+    </script>
+</body>
+</html> 

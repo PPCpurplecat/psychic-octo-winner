@@ -1,0 +1,12 @@
+{
+  "name": "ollama-proxy",
+  "version": "1.0.0",
+  "description": "Proxy server for OLLAMA API to avoid CORS issues",
+  "main": "ollama_proxy.js",
+  "scripts": {
+    "start": "node ollama_proxy.js"
+  },
+  "dependencies": {
+    "http-proxy": "^1.18.1"
+  }
+} 
